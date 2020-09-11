@@ -3,13 +3,13 @@ module.exports = class Maze {
     this.mazeWidth = 10;
     this.mazeHeight = 10;
     this.blockSize = 1;
-    this.sizeFactor = 4;
+    this.sizeFactor = 8;
     this.playerRadius = 30;
     this.expandedGrid = [];
-    //this.wallTexture = { image: new Image(), width: 24, height: 24 };
-    //this.wallTexture.image.src = 'assets/brickTile.png';
     this.wallTexture = { image: new Image(), width: 1, height: 128 };
     this.wallTexture.image.src = 'assets/wallSlice.png';
+    this.exitTexture = { image: new Image(), width: 1, height: 128 };
+    this.exitTexture.image.src = 'assets/exitSlice.png';
     this.light = 2;
   }
 
@@ -59,7 +59,6 @@ module.exports = class Maze {
             ctx.fillStyle = '#000000';
             ctx.fillRect(j * blk, i * blk, blk, blk);
           } else if (this.expandedGrid[i][j] === 2) {
-            console.log('Draw exit');
             ctx.fillStyle = '#00FF00';
             ctx.fillRect(j * blk, i * blk, blk, blk);
           }

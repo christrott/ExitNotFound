@@ -1,6 +1,6 @@
 module.exports = function camera(canvas, resolution, focalLength) {
     console.log('canvas' + ', resolution: ' + resolution + ', focalLength: ' + focalLength)
-    var camera = {
+    var cameraObj = {
         ctx: canvas.getContext('2d'),
         width: canvas.width = window.innerWidth * 0.5,
         height: canvas.height = window.innerHeight * 0.5,
@@ -14,11 +14,13 @@ module.exports = function camera(canvas, resolution, focalLength) {
 
     camera.render = function (player, map) {
         // this.drawSky(player.direction, map.skybox, map.light);
+
+    cameraObj.render = function (player, map) {
         this.drawColumns(player, map);
         //this.drawWeapon(player.weapon, player.paces);
     };
 
-    camera.drawColumns = function (player, map) {
+    cameraObj.drawColumns = function (player, map) {
         this.ctx.save();
         for (var column = 0; column < this.resolution; column++) {
             var x = column / this.resolution - 0.5;
@@ -29,9 +31,10 @@ module.exports = function camera(canvas, resolution, focalLength) {
         this.ctx.restore();
     };
 
-   camera.drawColumn = function (column, ray, angle, map) {
+    cameraObj.drawColumn = function (column, ray, angle, map) {
         var ctx = this.ctx;
         var texture = map.wallTexture;
+        var exitTexture = map.exitTexture;
         var left = Math.floor(column * this.spacing);
         var width = Math.ceil(this.spacing);
         var hit = -1;
@@ -48,9 +51,11 @@ module.exports = function camera(canvas, resolution, focalLength) {
                 var wall = this.project(step.height, angle, step.distance);
 
                 ctx.globalAlpha = 1;
-                //console.log(`ctx.drawImage(${texture.image}, ${textureX}, 0, 1, ${texture.height}, ${left}, ${wall.top}, ${width}, ${wall.height})`);
-                ctx.drawImage(texture.image, textureX, 0, 1, texture.height, left, wall.top, width, wall.height);
-
+                if (wall.type === 'Wall') {
+                    ctx.drawImage(texture.image, textureX, 0, 1, texture.height, left, wall.top, width, wall.height);
+                } else if (wall.type === 'Exit') {
+                    ctx.drawImage(exitTexture.image, textureX, 0, 1, texture.height, left, wall.top, width, wall.height);
+                }
                 ctx.fillStyle = '#000000';
                 ctx.globalAlpha = Math.max((step.distance + step.shading) / this.lightRange - map.light, 0);
                 ctx.fillRect(left, wall.top, width, wall.height);
@@ -62,17 +67,18 @@ module.exports = function camera(canvas, resolution, focalLength) {
         }
     };
 
-    camera.project = function (height, angle, distance) {
+    cameraObj.project = function (height, angle, distance) {
         var z = distance * Math.cos(angle);
         var wallHeight = this.height * height / z;
         var bottom = this.height / 2 * (1 + 1 / z);
         return {
             top: bottom - wallHeight,
-            height: wallHeight
+            height: wallHeight,
+            type: (height === 2) ? 'Exit' : 'Wall'
         };
     };
 
-    /*camera.drawWeapon = function (weapon, paces) {
+    /*cameraObj.drawWeapon = function (weapon, paces) {
         var bobX = Math.cos(paces * 2) * this.scale * 6;
         var bobY = Math.sin(paces * 4) * this.scale * 6;
         var left = this.width * 0.66 + bobX;
@@ -80,7 +86,7 @@ module.exports = function camera(canvas, resolution, focalLength) {
         this.ctx.drawImage(weapon.image, left, top, weapon.width * this.scale, weapon.height * this.scale);
     };*/
 
-    /*camera.drawSky = function (direction, sky, ambient) {
+    cameraObj.drawSky = function (direction, sky, ambient) {
         var width = sky.width * (this.height / sky.height) * 2;
         var left = (direction / CIRCLE) * -width;
 
@@ -95,6 +101,6 @@ module.exports = function camera(canvas, resolution, focalLength) {
             this.ctx.fillRect(0, this.height * 0.5, this.width, this.height * 0.5);
         }
         this.ctx.restore();
-    };*/
-    return camera;
+    };
+    return cameraObj;
 }
