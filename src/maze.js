@@ -51,13 +51,13 @@ module.exports = class Maze {
   drawExpandedMaze(canvas, player, pan) {
     const ctx = canvas.getContext('2d');
     const blk = this.blockSize * this.sizeFactor;
-    const offset = { x: (canvas.width - blk * this.mazeWidth) / 2, y: (canvas.height - blk * this.mazeHeight) / 2 };
+    const offset = { x: canvas.width / 2, y: canvas.height / 2 };
     ctx.strokeRect(offset.x - (pan.x * blk), offset.y - (pan.y * blk), this.mazeWidth * this.sizeFactor, this.mazeHeight * this.sizeFactor); // Add the outside walls
     for (var i = 0; i < this.mazeHeight; i++) {
       for (var j = 0; j < this.mazeWidth; j++) {
         if (this.expandedGrid[i][j]) {
           if (this.expandedGrid[i][j] === 1) {
-            ctx.fillStyle = '#000000';
+            ctx.fillStyle = '#999999';
             ctx.fillRect((j - pan.x) * blk + offset.x, (i - pan.y) * blk + offset.y, blk, blk);
           } else if (this.expandedGrid[i][j] === 2) {
             ctx.fillStyle = '#00FF00';
