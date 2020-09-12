@@ -1,7 +1,6 @@
 /*
-  TODO
-  - Map icon for touch/click
-  - Generate and draw sky
+  Potential Improvements
+  - Improved touch experience
   - Vision range
   - Draw the vision arc with a cone, resize to reflect actual vision range
   - SFX: Footsteps
@@ -15,19 +14,26 @@ var Maze = require('./maze');
 var Player = require('./player');
 var Controls = require('./controls');
 var camera = require('./camera');
+var Noise = require('./noise');
+var noise = new Noise();
+noise.seed(Math.random());
+
 
 // Init game config
+var currentStage = 1;
 var canvas = document.querySelector('#game');
 var ctx = canvas.getContext('2d');
-var seed = 2;
+var seed = Math.random(); // 2
 var rand = rng(seed);
 var MoveSpeed = 5;
 var controls = new Controls();
 var player = new Player();
 var currentCamera = camera(canvas, 320, 0.8);
 var maze = loadNextMaze(10, 10);
+currentCamera.generateSky(ctx, noise);
 
 function loadNextMaze(mazeWidth, mazeHeight) {
+  currentStage++;
   console.log(`loadNextMaze(${mazeWidth}, ${mazeHeight})`);
   player.reset();
   const newMaze = new Maze();
@@ -41,6 +47,11 @@ function loadNextMaze(mazeWidth, mazeHeight) {
   return newMaze;
 }
 
+function drawGui() {
+    ctx.fillText(`Stage ${currentStage}`, 10, 10);
+    ctx.fillText(`Steps ${Math.round(player.totalSteps)}`, 10, 30);
+}
+
 // Loop it!
 raf.start(function(elapsed) {
   // Clear the screen
@@ -51,6 +62,7 @@ raf.start(function(elapsed) {
   if (controls.showMaze) {
     maze.drawExpandedMaze(canvas, player, { x: player.x, y: player.y });
   }
+  drawGui();
 
   // Update player pos
   if (controls.states.left) {

@@ -9,10 +9,12 @@ module.exports = function camera(canvas, resolution, focalLength) {
         range: 14, //MOBILE ? 8 : 14,
         lightRange: 15,
         scale: (this.width + this.height) / 1200,
+        skyboxImage: null
     }
 
     cameraObj.render = function (player, map) {
-        // this.drawSky(player.direction, map.skybox, map.light);
+        const ctx = canvas.getContext('2d');
+        this.drawSky(ctx, canvas.width, canvas.height);
         this.drawColumns(player, map);
     };
 
@@ -70,21 +72,27 @@ module.exports = function camera(canvas, resolution, focalLength) {
         };
     };
 
-    cameraObj.drawSky = function (direction, sky, ambient) {
-        var width = sky.width * (this.height / sky.height) * 2;
-        var left = (direction / (Math.PI*2)) * -width;
+    cameraObj.generateSky = function (ctx, noise) {
+        this.skyboxImage = ctx.createImageData(canvas.width, canvas.height);
+        var data = this.skyboxImage.data;
+        for (var x = 0; x < canvas.width; x++) {
+            for (var y = 0; y < canvas.height; y++) {
+                var value = Math.abs(noise.perlin2(x / 100, y / 100));
+                value *= 25;
+                var cell = (x + y * canvas.width) * 4;
+                data[cell] = data[cell + 1] = data[cell + 2] = value;
+                data[cell] += Math.max(0, (25 - value) * 8);
+                data[cell + 3] = 255; // alpha.
+            }
+        }
+    }
 
-        this.ctx.save();
-        this.ctx.drawImage(sky.image, left, 0, width, this.height);
-        if (left < width - this.width) {
-            this.ctx.drawImage(sky.image, left + width, 0, width, this.height);
-        }
-        if (ambient > 0) {
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.globalAlpha = ambient * 0.1;
-            this.ctx.fillRect(0, this.height * 0.5, this.width, this.height * 0.5);
-        }
-        this.ctx.restore();
-    };
+    cameraObj.drawSky = function (ctx, width, height) {
+        ctx.fillColor = 'black';
+        ctx.fillRect(0, 0, 100, 50);
+        ctx.putImageData(this.skyboxImage, 0, 0);
+        ctx.fillRect(0, height * 0.5, width, height * 0.5);
+    }
+
     return cameraObj;
 }
