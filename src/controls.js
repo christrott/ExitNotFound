@@ -8,8 +8,8 @@ module.exports = class Controls {
     }
   
     onKey(val, e) {
-      if (e.keyCode === 77) { // M keyCode
-        this.showMaze = val;
+      if (e.keyCode === 77 && val) { // M keyCode
+        this.showMaze = !this.showMaze;
       }
       var state = this.codes[e.keyCode];
       if (typeof state === 'undefined') {

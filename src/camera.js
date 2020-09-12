@@ -69,7 +69,7 @@ module.exports = function camera(canvas, resolution, focalLength) {
 
     cameraObj.project = function (height, angle, distance) {
         var z = distance * Math.cos(angle);
-        var wallHeight = this.height * height / z;
+        var wallHeight = (height === 2) ? this.height * 1 / z : this.height * height / z;
         var bottom = this.height / 2 * (1 + 1 / z);
         return {
             top: bottom - wallHeight,

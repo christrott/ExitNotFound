@@ -1,10 +1,10 @@
 module.exports = class Maze {
   constructor() {
-    this.mazeWidth = 10;
-    this.mazeHeight = 10;
+    // this.mazeWidth = 10;
+    // this.mazeHeight = 10;
     this.blockSize = 1;
     this.sizeFactor = 8;
-    this.playerRadius = 30;
+    this.playerRadius = 15;
     this.expandedGrid = [];
     this.wallTexture = { image: new Image(), width: 1, height: 128 };
     this.wallTexture.image.src = 'assets/wallSlice.png';
@@ -48,48 +48,42 @@ module.exports = class Maze {
     this.expandedGrid[this.mazeHeight - 1][this.mazeWidth - 1] = 2; // Set exit point
   }
 
-  drawExpandedMaze(ctx) {
+  drawExpandedMaze(canvas, player, pan) {
+    const ctx = canvas.getContext('2d');
     const blk = this.blockSize * this.sizeFactor;
-    ctx.strokeRect(0, 0, this.mazeWidth * this.sizeFactor, this.mazeHeight * this.sizeFactor); // Add the outside walls
-    // ctx.clearRect(this.mazeWidth - 1 * blk, this.mazeHeight * blk - blk, blk, blk); // Clear the exit passage
+    const offset = { x: (canvas.width - blk * this.mazeWidth) / 2, y: (canvas.height - blk * this.mazeHeight) / 2 };
+    ctx.strokeRect(offset.x - (pan.x * blk), offset.y - (pan.y * blk), this.mazeWidth * this.sizeFactor, this.mazeHeight * this.sizeFactor); // Add the outside walls
     for (var i = 0; i < this.mazeHeight; i++) {
       for (var j = 0; j < this.mazeWidth; j++) {
         if (this.expandedGrid[i][j]) {
           if (this.expandedGrid[i][j] === 1) {
             ctx.fillStyle = '#000000';
-            ctx.fillRect(j * blk, i * blk, blk, blk);
+            ctx.fillRect((j - pan.x) * blk + offset.x, (i - pan.y) * blk + offset.y, blk, blk);
           } else if (this.expandedGrid[i][j] === 2) {
             ctx.fillStyle = '#00FF00';
-            ctx.fillRect(j * blk, i * blk, blk, blk);
+            ctx.fillRect((j - pan.x) * blk + offset.x, (i - pan.y) * blk + offset.y, blk, blk);
           }
         }
       }
     }
-  }
+    // Draw player details
+    let scaleFactor = this.sizeFactor;
+    // Draw direction cone
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    // ctx.arc(player.x * scaleFactor, player.y * scaleFactor, maze.playerRadius * scaleFactor, player.direction - Math.PI/3, player.direction + Math.PI/3, false);
+    ctx.arc(offset.x - this.playerRadius/2, offset.y - this.playerRadius/2, this.playerRadius * scaleFactor, player.direction - Math.PI/3, player.direction + Math.PI/3, false);
+    ctx.fillStyle = '#009900';
+    ctx.fill();
 
-  drawMaze(ctx, grid) {
-    const blk = this.blockSize * this.sizeFactor;
-    //ctx.strokeRect(0,0,this.mazeWidth,this.mazeHeight); // Add the outside walls
-    ctx.clearRect(this.mazeWidth - 1, this.mazeHeight - blk, blk, blk); // Clear the exit passage
-    for (var i = 0; i < grid.length; i++) {
-      for (var j = 0; j < grid[i].length; j++) {
-        if (grid[i][j]) {
-          if (grid[i][j] === 1) {
-            // draw south wall
-            ctx.fillRect(j * blk, i * blk + blk - 1, blk, 1);
-          }
-          if (grid[i][j] === 2) {
-            // draw east wall
-            ctx.fillRect(j * blk + blk - 1, i * blk, 1, blk);
-          }
-          if (grid[i][j] === 3) {
-            // draw south and east walls
-            ctx.fillRect(j * blk + blk - 1, i * blk, 1, blk);
-            ctx.fillRect(j * blk, i * blk + blk - 1, blk, 1);
-          }
-        }
-      }
-    }
+    // Draw player
+    ctx.globalAlpha = 1.0;
+    ctx.beginPath();
+    //ctx.arc(player.x * scaleFactor, player.y * scaleFactor, maze.playerRadius, 0, Math.PI * 2, true);
+    ctx.arc(offset.x - this.playerRadius/2, offset.y - this.playerRadius/2, this.playerRadius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fillStyle = '#990000';
+    ctx.fill();
   }
 
   check(x, y) {

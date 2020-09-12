@@ -1,7 +1,8 @@
 /*
   TODO
-  - Generate and draw sky
+  - Pan map draw based on player position
   - Touch controls
+  - Generate and draw sky
   - Map icon for touch/click
   - Vision range
   - Draw the vision arc with a cone, resize to reflect actual vision range
@@ -26,15 +27,18 @@ var MoveSpeed = 5;
 var controls = new Controls();
 var player = new Player();
 var currentCamera = camera(canvas, 320, 0.8);
-var maze = loadNextMaze();
+var maze = loadNextMaze(10, 10);
 
-function loadNextMaze() {
+function loadNextMaze(mazeWidth, mazeHeight) {
+  console.log(`loadNextMaze(${mazeWidth}, ${mazeHeight})`);
   player.reset();
   const newMaze = new Maze();
-  newMaze.playerRadius = newMaze.blockSize * newMaze.sizeFactor;
-  var grid = Array(newMaze.mazeWidth).fill(0).map(() => Array(newMaze.mazeHeight).fill(0));
-  newMaze.expandedGrid = Array(newMaze.mazeWidth * 2).fill(0).map(() => Array(newMaze.mazeHeight * 2).fill(0));
-  newMaze.divide(grid, 0, 0, newMaze.mazeWidth, newMaze.mazeHeight, newMaze.chooseOrientation(newMaze.mazeWidth, newMaze.mazeHeight, rand), rand);
+  newMaze.mazeWidth = mazeWidth;
+  newMaze.mazeHeight = mazeHeight;
+  newMaze.playerRadius = newMaze.blockSize * newMaze.sizeFactor / 2;
+  var grid = Array(newMaze.mazeWidth / 2).fill(0).map(() => Array(newMaze.mazeHeight / 2).fill(0));
+  newMaze.expandedGrid = Array(newMaze.mazeWidth).fill(0).map(() => Array(newMaze.mazeHeight).fill(0));
+  newMaze.divide(grid, 0, 0, newMaze.mazeWidth / 2, newMaze.mazeHeight / 2, newMaze.chooseOrientation(newMaze.mazeWidth / 2, newMaze.mazeHeight / 2, rand), rand);
   newMaze.expandGrid(grid);
   return newMaze;
 }
@@ -47,22 +51,7 @@ raf.start(function(elapsed) {
 
   // Draw maze
   if (controls.showMaze) {
-    maze.drawExpandedMaze(ctx);
-    let scaleFactor = maze.sizeFactor;
-    // Draw direction cone
-    ctx.globalAlpha = 0.5;
-    ctx.beginPath();
-    ctx.arc(player.x * scaleFactor, player.y * scaleFactor, maze.playerRadius * scaleFactor, player.direction - Math.PI/3, player.direction + Math.PI/3, false);
-    ctx.fillStyle = '#009900';
-    ctx.fill();
-
-    // Draw player
-    ctx.globalAlpha = 1.0;
-    ctx.beginPath();
-    ctx.arc(player.x * scaleFactor, player.y * scaleFactor, maze.playerRadius, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.fillStyle = '#990000';
-    ctx.fill();
+    maze.drawExpandedMaze(canvas, player, { x: player.x, y: player.y });
   }
 
   // Update player pos
@@ -80,6 +69,6 @@ raf.start(function(elapsed) {
   }
 
   if (player.exited) {
-    loadNextMaze();
+    maze = loadNextMaze(maze.mazeWidth * 2, maze.mazeHeight * 2);
   }
 });
