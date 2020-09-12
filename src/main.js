@@ -1,9 +1,7 @@
 /*
   TODO
-  - Pan map draw based on player position
-  - Touch controls
-  - Generate and draw sky
   - Map icon for touch/click
+  - Generate and draw sky
   - Vision range
   - Draw the vision arc with a cone, resize to reflect actual vision range
   - SFX: Footsteps

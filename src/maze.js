@@ -1,7 +1,5 @@
 module.exports = class Maze {
   constructor() {
-    // this.mazeWidth = 10;
-    // this.mazeHeight = 10;
     this.blockSize = 1;
     this.sizeFactor = 8;
     this.playerRadius = 15;
@@ -10,6 +8,8 @@ module.exports = class Maze {
     this.wallTexture.image.src = 'assets/wallSlice.png';
     this.exitTexture = { image: new Image(), width: 1, height: 128 };
     this.exitTexture.image.src = 'assets/exitSlice.png';
+    // this.skybox = { image: new Image(), width: 1, height: 128 };
+    // this.skybox.image.src = 'assets/skyboxSlice.png';
     this.light = 2;
   }
 
@@ -71,7 +71,6 @@ module.exports = class Maze {
     // Draw direction cone
     ctx.globalAlpha = 0.5;
     ctx.beginPath();
-    // ctx.arc(player.x * scaleFactor, player.y * scaleFactor, maze.playerRadius * scaleFactor, player.direction - Math.PI/3, player.direction + Math.PI/3, false);
     ctx.arc(offset.x - this.playerRadius/2, offset.y - this.playerRadius/2, this.playerRadius * scaleFactor, player.direction - Math.PI/3, player.direction + Math.PI/3, false);
     ctx.fillStyle = '#009900';
     ctx.fill();
@@ -79,7 +78,6 @@ module.exports = class Maze {
     // Draw player
     ctx.globalAlpha = 1.0;
     ctx.beginPath();
-    //ctx.arc(player.x * scaleFactor, player.y * scaleFactor, maze.playerRadius, 0, Math.PI * 2, true);
     ctx.arc(offset.x - this.playerRadius/2, offset.y - this.playerRadius/2, this.playerRadius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.fillStyle = '#990000';

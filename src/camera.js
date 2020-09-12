@@ -1,9 +1,8 @@
 module.exports = function camera(canvas, resolution, focalLength) {
-    console.log('canvas' + ', resolution: ' + resolution + ', focalLength: ' + focalLength)
     var cameraObj = {
         ctx: canvas.getContext('2d'),
-        width: canvas.width = window.innerWidth * 0.5,
-        height: canvas.height = window.innerHeight * 0.5,
+        width: canvas.width = window.innerWidth * 0.8,
+        height: canvas.height = window.innerHeight * 0.8,
         resolution: resolution,
         spacing: canvas.width / resolution,
         focalLength: focalLength || 0.8,
@@ -12,12 +11,9 @@ module.exports = function camera(canvas, resolution, focalLength) {
         scale: (this.width + this.height) / 1200,
     }
 
-    camera.render = function (player, map) {
-        // this.drawSky(player.direction, map.skybox, map.light);
-
     cameraObj.render = function (player, map) {
+        // this.drawSky(player.direction, map.skybox, map.light);
         this.drawColumns(player, map);
-        //this.drawWeapon(player.weapon, player.paces);
     };
 
     cameraObj.drawColumns = function (player, map) {
@@ -60,10 +56,6 @@ module.exports = function camera(canvas, resolution, focalLength) {
                 ctx.globalAlpha = Math.max((step.distance + step.shading) / this.lightRange - map.light, 0);
                 ctx.fillRect(left, wall.top, width, wall.height);
             }
-
-            ctx.fillStyle = '#ffffff';
-            ctx.globalAlpha = 0.15;
-            // while (--rainDrops > 0) ctx.fillRect(left, Math.random() * rain.top, 1, rain.height);
         }
     };
 
@@ -78,17 +70,9 @@ module.exports = function camera(canvas, resolution, focalLength) {
         };
     };
 
-    /*cameraObj.drawWeapon = function (weapon, paces) {
-        var bobX = Math.cos(paces * 2) * this.scale * 6;
-        var bobY = Math.sin(paces * 4) * this.scale * 6;
-        var left = this.width * 0.66 + bobX;
-        var top = this.height * 0.6 + bobY;
-        this.ctx.drawImage(weapon.image, left, top, weapon.width * this.scale, weapon.height * this.scale);
-    };*/
-
     cameraObj.drawSky = function (direction, sky, ambient) {
         var width = sky.width * (this.height / sky.height) * 2;
-        var left = (direction / CIRCLE) * -width;
+        var left = (direction / (Math.PI*2)) * -width;
 
         this.ctx.save();
         this.ctx.drawImage(sky.image, left, 0, width, this.height);
