@@ -29,7 +29,6 @@ module.exports = class Player {
         this.x = 0;
         this.y = 0;
         this.direction = 0;
-        this.totalSteps = 0;
         this.exited = false;
     }
 

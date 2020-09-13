@@ -12,17 +12,17 @@ var Player = require('./player');
 var Controls = require('./controls');
 var Camera = require('./camera');
 var Noise = require('./noise');
-var noise = new Noise();
-noise.seed(Math.random());
 
 
 // Init game config
 var currentStage = 0;
+var moveSpeed = 3;
+var noise = new Noise();
+noise.seed(Math.random());
 var canvas = document.querySelector('#game');
 var ctx = canvas.getContext('2d');
 var seed = Math.random();
 var rand = rng(seed);
-var MoveSpeed = 3;
 var controls = new Controls();
 var player = new Player();
 var currentCamera = new Camera(canvas, 320, 0.8);
@@ -70,10 +70,10 @@ raf.start(function(elapsed) {
     player.rotate(Math.PI * elapsed);
   }
   if (controls.states.forward) {
-    player.move(MoveSpeed * elapsed, maze);
+    player.move(moveSpeed * elapsed, maze);
   }
   if (controls.states.backward) {
-    player.move(-MoveSpeed * elapsed, maze);
+    player.move(-moveSpeed * elapsed, maze);
   }
 
   if (player.exited) {
