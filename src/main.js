@@ -20,7 +20,7 @@ noise.seed(Math.random());
 
 
 // Init game config
-var currentStage = 1;
+var currentStage = 0;
 var canvas = document.querySelector('#game');
 var ctx = canvas.getContext('2d');
 var seed = Math.random(); // 2
@@ -48,8 +48,10 @@ function loadNextMaze(mazeWidth, mazeHeight) {
 }
 
 function drawGui() {
-    ctx.fillText(`Stage ${currentStage}`, 10, 10);
-    ctx.fillText(`Steps ${Math.round(player.totalSteps)}`, 10, 30);
+  ctx.font = '18px sans-serif'
+  ctx.fillStyle = '#BBBBBB';
+  ctx.fillText(`Stage ${currentStage}`, 10, 20);
+  ctx.fillText(`Steps ${Math.round(player.totalSteps)}`, 10, 40);
 }
 
 // Loop it!

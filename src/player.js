@@ -22,7 +22,7 @@ module.exports = class Player {
         if (checkX === 2 || checkY === 2) {
             this.exited = true;
         }
-        this.totalSteps += moveStep;
+        this.totalSteps += Math.abs(moveStep);
     }
 
     reset() {
