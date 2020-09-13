@@ -41,8 +41,6 @@ module.exports = function camera(canvas, resolution, focalLength) {
 
         for (var s = ray.length - 1; s >= 0; s--) {
             var step = ray[s];
-            //var rainDrops = Math.pow(Math.random(), 3) * s;
-            //var rain = (rainDrops > 0) && this.project(0.1, angle, step.distance);
 
             if (s === hit) {
                 var textureX = Math.floor(texture.width * step.offset);
@@ -77,20 +75,21 @@ module.exports = function camera(canvas, resolution, focalLength) {
         var data = this.skyboxImage.data;
         for (var x = 0; x < canvas.width; x++) {
             for (var y = 0; y < canvas.height; y++) {
-                var value = Math.abs(noise.perlin2(x / 100, y / 100));
+                var value = Math.abs(noise.perlin2(x / 100, y / 50));
                 value *= 25;
                 var cell = (x + y * canvas.width) * 4;
                 data[cell] = data[cell + 1] = data[cell + 2] = value;
-                data[cell] += Math.max(0, (25 - value) * 8);
-                data[cell + 3] = 255; // alpha.
+                data[cell] += Math.max(0, (25 - value) * 2);
+                data[cell + 3] = 255; // Alpha value
             }
         }
     }
 
     cameraObj.drawSky = function (ctx, width, height) {
-        ctx.fillColor = 'black';
+        ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, 100, 50);
         ctx.putImageData(this.skyboxImage, 0, 0);
+        ctx.fillStyle = '#21130a';
         ctx.fillRect(0, height * 0.5, width, height * 0.5);
     }
 
