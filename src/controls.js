@@ -28,9 +28,9 @@ module.exports = class Controls {
       var t = e.touches[0];
       this.onTouchEnd(e);
       console.log(t.pageX, t.pageY);
-      if (t.pageY < window.innerHeight * 0.5) {
+      if (t.pageY < window.innerHeight * 0.35) {
         this.onKey(true, { keyCode: 38 });
-      } else if (t.pageY > window.innerHeight * 0.8) {
+      } else if (t.pageY > window.innerHeight * 0.7) {
         this.onKey(true, { keyCode: 77 });
       } else if (t.pageX < window.innerWidth * 0.5) {
         this.onKey(true, { keyCode: 37 });
