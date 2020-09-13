@@ -1,5 +1,5 @@
 /*
- * https://github.com/josephg/noisejs/blob/master/perlin.js
+ * Code extracted from the full file at https://github.com/josephg/noisejs/blob/master/perlin.js
  *
  * A speed-improved perlin and simplex noise algorithms for 2D.
  *
@@ -21,7 +21,7 @@ class Grad {
     this.y = y;
     this.z = z;
   }
-  
+
   dot2(x, y) {
     return this.x * x + this.y * y;
   }
@@ -88,14 +88,6 @@ module.exports = class Noise {
       this.gradP[i] = this.gradP[i + 256] = this.grad3[v % 12];
     }
   }
-
-  //module.seed(0);
-
-  /*
-  for(var i=0; i<256; i++) {
-    perm[i] = perm[i + 256] = p[i];
-    gradP[i] = gradP[i + 256] = grad3[perm[i] % 12];
-  }*/
 
   // ##### Perlin noise stuff
 

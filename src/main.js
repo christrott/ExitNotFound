@@ -1,10 +1,7 @@
 /*
   Potential Improvements
-  - Improved touch experience
-  - Vision range
-  - Draw the vision arc with a cone, resize to reflect actual vision range
-  - SFX: Footsteps
-  - SFX: Breathing based on movement distance delta time
+  - Vision range & lighting
+  - Draw the vision arc with a cone, resize cone to reflect actual vision range
 */
 
 // Load deps
@@ -13,7 +10,7 @@ var rng = require('./rng');
 var Maze = require('./maze');
 var Player = require('./player');
 var Controls = require('./controls');
-var camera = require('./camera');
+var Camera = require('./camera');
 var Noise = require('./noise');
 var noise = new Noise();
 noise.seed(Math.random());
@@ -23,18 +20,17 @@ noise.seed(Math.random());
 var currentStage = 0;
 var canvas = document.querySelector('#game');
 var ctx = canvas.getContext('2d');
-var seed = Math.random(); // 2
+var seed = Math.random();
 var rand = rng(seed);
 var MoveSpeed = 5;
 var controls = new Controls();
 var player = new Player();
-var currentCamera = camera(canvas, 320, 0.8);
+var currentCamera = new Camera(canvas, 320, 0.8);
 var maze = loadNextMaze(10, 10);
 currentCamera.generateSky(ctx, noise);
 
 function loadNextMaze(mazeWidth, mazeHeight) {
   currentStage++;
-  console.log(`loadNextMaze(${mazeWidth}, ${mazeHeight})`);
   player.reset();
   const newMaze = new Maze();
   newMaze.mazeWidth = mazeWidth;
@@ -48,10 +44,10 @@ function loadNextMaze(mazeWidth, mazeHeight) {
 }
 
 function drawGui() {
-  ctx.font = '18px sans-serif'
+  ctx.font = '18px sans-serif';
   ctx.fillStyle = '#BBBBBB';
   ctx.fillText(`Stage ${currentStage}`, 10, 20);
-  ctx.fillText(`Steps ${Math.round(player.totalSteps)}`, 10, 40);
+  ctx.fillText(`Steps ${Math.round(player.totalSteps)}`, 10, 45);
 }
 
 // Loop it!

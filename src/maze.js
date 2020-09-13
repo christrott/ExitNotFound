@@ -1,3 +1,9 @@
+/* 
+  Divide based partially on the recursive division algorithm found here:
+  http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap
+  This is a great resource if you're interested in maze generation in general
+*/
+
 module.exports = class Maze {
   constructor() {
     this.blockSize = 1;
@@ -8,8 +14,6 @@ module.exports = class Maze {
     this.wallTexture.image.src = 'assets/wallSlice.png';
     this.exitTexture = { image: new Image(), width: 1, height: 128 };
     this.exitTexture.image.src = 'assets/exitSlice.png';
-    // this.skybox = { image: new Image(), width: 1, height: 128 };
-    // this.skybox.image.src = 'assets/skyboxSlice.png';
     this.light = 2;
   }
 
